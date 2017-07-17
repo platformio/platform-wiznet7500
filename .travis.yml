@@ -1,0 +1,26 @@
+language: python
+python:
+  - "2.7"
+
+env:
+  - PLATFORMIO_PROJECT_DIR=examples/mbed-blink
+  - PLATFORMIO_PROJECT_DIR=examples/mbed-dsp
+  - PLATFORMIO_PROJECT_DIR=examples/mbed-events
+  - PLATFORMIO_PROJECT_DIR=examples/mbed-rtos
+  - PLATFORMIO_PROJECT_DIR=examples/mbed-serial
+
+install:
+  - pip install -U https://github.com/platformio/platformio/archive/develop.zip
+  - platformio platform install file://.
+
+script:
+  - platformio run -d $PLATFORMIO_PROJECT_DIR
+
+notifications:
+  email: false
+
+  slack:
+    rooms:
+      secure: TBS/x6nPsWNf44lt2rfjnsdLAkHo0VVKQ0/mfq4DssFSNGE09QK4Wf5QC9LY0QsvpEro8Dtr5/AJYjEokU/XHwpVTl/pqlPQRTvbY1H4jPsI6va5IDeExmdkXFeVapGMw8zG56hCypQkmQD7tjdDbSs5mIX3RhzVuBn6LQE1LARfeIxWw0Mks+8yglR8MH0nielQB8JjL/szXyZRjf/mWsFyjdpDwFEXS+4jXW1WMCWW/7RHukAK2TIUvjVPUgZHvaR7mnpUjYYAfCQP3JpLbxtBG56V/b6ryRLswUWEp6Rh5QyupUFP4brotdGVeENpuFYTAURNPtlCOvdxKvjB2msjh9IdFeT343ClZPgO+yMS/h0ZHoswl4xReQDF3NhVK8J4D2plILYzOf9Yps2AB8sYAeZpuzCaSZEW6854sFR13gmpzUnnujHZGvXSLgQ0YqtO52uaub6HEPevyUVguqS9e+DE764zu4evlhLgasRWbmCbpYwHvrS7ofptGj8auTsAc59SRCquf4Md6GpSDIE82K97LLG5blH4n4opanF4Ivcz2L9YgwYxTQvt7iia/FNsAprhN8x0qLfTthpyAt8nLvjshscz+JRlFPkrMchHhWWSe52l44qTdAItxAOZaYSeZgyf6Mlr070MOY3yjInkstMfM3DIVkx6WHvQwvA=
+    on_failure: always
+    on_success: change
