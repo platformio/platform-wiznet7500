@@ -4,6 +4,9 @@
     "f_cpu": "48000000L",
     "mcu": "wiznet7500"
   },
+  "connectivity": [
+    "ethernet"
+  ],
   "debug": {
     "tools": {
       "cmsis-dap": {
