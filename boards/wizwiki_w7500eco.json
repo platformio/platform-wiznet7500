@@ -8,22 +8,35 @@
     "ethernet"
   ],
   "debug": {
+    "jlink_device": "cortex-m0",
     "tools": {
       "cmsis-dap": {
+        "onboard": true,
         "server": {
-          "executable": "pyocd-gdbserver"
-        },
-        "onboard": true
+          "arguments": [
+            "pyocd-gdbserver.py",
+            "-t",
+            "w7500"
+          ],
+          "executable": "$PYTHONEXE",
+          "package": "tool-pyocd"
+        }
       }
     }
   },
   "frameworks": [
     "mbed"
   ],
-  "name": "WIZNet WIZwiki-W7500ECO",
+  "name": "WIZwiki-W7500ECO",
   "upload": {
     "maximum_ram_size": 49152,
-    "maximum_size": 131072
+    "maximum_size": 131072,
+    "protocol": "mbed",
+    "protocols": [
+      "cmsis-dap",
+      "jlink",
+      "mbed"
+    ]
   },
   "url": "https://developer.mbed.org/platforms/WIZwiki-W7500ECO/",
   "vendor": "WIZNet"
