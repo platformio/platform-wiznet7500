@@ -10,7 +10,7 @@
       "Cortex-M",
       "WIZNet",
       "W7500",
-      "TCP/IP",
+      "Ethernet",
       "IOP"
   ],
   "engines": {
