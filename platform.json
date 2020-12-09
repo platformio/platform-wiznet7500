@@ -10,7 +10,7 @@
       "Cortex-M",
       "WIZNet",
       "W7500",
-      "TCP/IP",
+      "Ethernet",
       "IOP"
   ],
   "engines": {
@@ -20,7 +20,7 @@
     "type": "git",
     "url": "https://github.com/platformio/platform-wiznet7500.git"
   },
-  "version": "3.6.1",
+  "version": "3.6.2",
   "frameworks": {
     "mbed": {
       "package": "framework-mbed",
