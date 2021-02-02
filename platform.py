@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from platform import system
+import copy
+import platform
 
 from platformio.managers.platform import PlatformBase
 
@@ -29,7 +30,7 @@ class Wiznet7500Platform(PlatformBase):
                                                 variables.get("board")).get(
                                                     "upload.protocol", ""))
             if upload_protocol == "cmsis-dap":
-                self.packages['tool-pyocd']['type'] = "uploader"
+                self.packages["tool-pyocd"]["type"] = "uploader"
 
         # configure J-LINK tool
         jlink_conds = [
@@ -65,13 +66,13 @@ class Wiznet7500Platform(PlatformBase):
         upload_protocols = board.manifest.get("upload", {}).get(
             "protocols", [])
         if "tools" not in debug:
-            debug['tools'] = {}
+            debug["tools"] = {}
 
         # J-Link Probe
         if "jlink" in upload_protocols:
             assert debug.get("jlink_device"), (
                 "Missed J-Link Device ID for %s" % board.id)
-            debug['tools']['jlink'] = {
+            debug["tools"]["jlink"] = {
                 "server": {
                     "package": "tool-jlink",
                     "arguments": [
@@ -82,10 +83,29 @@ class Wiznet7500Platform(PlatformBase):
                         "-port", "2331"
                     ],
                     "executable": ("JLinkGDBServerCL.exe"
-                                    if system() == "Windows" else
+                                    if platform.system() == "Windows" else
                                     "JLinkGDBServer")
                 }
             }
 
-        board.manifest['debug'] = debug
+        board.manifest["debug"] = debug
         return board
+
+    def configure_debug_options(self, initial_debug_options, ide_data):
+        debug_options = copy.deepcopy(initial_debug_options)
+        server_executable = debug_options["server"]["executable"].lower()
+        adapter_speed = initial_debug_options.get("speed")
+        if adapter_speed:
+            if "jlink" in server_executable:
+                debug_options["server"]["arguments"].extend(
+                    ["-speed", adapter_speed]
+                )
+            elif "pyocd" in debug_options["server"]["package"]:
+                assert (
+                    adapter_speed.isdigit()
+                ), "pyOCD requires the debug frequency value in Hz, e.g. 4000"
+                debug_options["server"]["arguments"].extend(
+                    ["--frequency", "%d" % int(adapter_speed)]
+                )
+
+        return debug_options
