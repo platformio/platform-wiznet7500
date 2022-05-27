@@ -1,4 +1,4 @@
-# WIZNet W7500: development platform for [PlatformIO](http://platformio.org)
+# WIZNet W7500: development platform for [PlatformIO](https://platformio.org)
 
 ![alt text](https://github.com/platformio/platform-wiznet7500/workflows/Examples/badge.svg "WIZNet W7500 development platform")
 
@@ -9,7 +9,7 @@ The IOP (Internet Offload Processor) W7500 is the one-chip solution which integr
 
 # Usage
 
-1. [Install PlatformIO](http://platformio.org)
+1. [Install PlatformIO](https://platformio.org)
 2. Create PlatformIO project and configure a platform option in [platformio.ini](https://docs.platformio.org/page/projectconf.html) file:
 
 ## Stable version
