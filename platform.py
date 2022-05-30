@@ -12,9 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from platform import system
+import sys
 
-from platformio.managers.platform import PlatformBase
+from platformio.public import PlatformBase
+
+IS_WINDOWS = sys.platform.startswith("win")
 
 
 class Wiznet7500Platform(PlatformBase):
@@ -29,7 +31,7 @@ class Wiznet7500Platform(PlatformBase):
                                                 variables.get("board")).get(
                                                     "upload.protocol", ""))
             if upload_protocol == "cmsis-dap":
-                self.packages['tool-pyocd']['type'] = "uploader"
+                self.packages["tool-pyocd"]["type"] = "uploader"
 
         # configure J-LINK tool
         jlink_conds = [
@@ -46,17 +48,16 @@ class Wiznet7500Platform(PlatformBase):
         if not any(jlink_conds) and jlink_pkgname in self.packages:
             del self.packages[jlink_pkgname]
 
-        return PlatformBase.configure_default_packages(self, variables,
-                                                       targets)
+        return super().configure_default_packages(variables, targets)
 
     def get_boards(self, id_=None):
-        result = PlatformBase.get_boards(self, id_)
+        result = super().get_boards(id_)
         if not result:
             return result
         if id_:
             return self._add_default_debug_tools(result)
         else:
-            for key, value in result.items():
+            for key in result:
                 result[key] = self._add_default_debug_tools(result[key])
         return result
 
@@ -65,13 +66,13 @@ class Wiznet7500Platform(PlatformBase):
         upload_protocols = board.manifest.get("upload", {}).get(
             "protocols", [])
         if "tools" not in debug:
-            debug['tools'] = {}
+            debug["tools"] = {}
 
         # J-Link Probe
         if "jlink" in upload_protocols:
             assert debug.get("jlink_device"), (
                 "Missed J-Link Device ID for %s" % board.id)
-            debug['tools']['jlink'] = {
+            debug["tools"]["jlink"] = {
                 "server": {
                     "package": "tool-jlink",
                     "arguments": [
@@ -81,11 +82,21 @@ class Wiznet7500Platform(PlatformBase):
                         "-device", debug.get("jlink_device"),
                         "-port", "2331"
                     ],
-                    "executable": ("JLinkGDBServerCL.exe"
-                                    if system() == "Windows" else
-                                    "JLinkGDBServer")
+                    "executable": (
+                        "JLinkGDBServerCL.exe" if IS_WINDOWS else "JLinkGDBServer")
                 }
             }
 
-        board.manifest['debug'] = debug
+        board.manifest["debug"] = debug
         return board
+
+    def configure_debug_session(self, debug_config):
+        if debug_config.speed:
+            if "jlink" in (debug_config.server or {}).get("executable", "").lower():
+                debug_config.server["arguments"].extend(
+                    ["-speed", debug_config.speed]
+                )
+            elif "pyocd" in debug_config.server["package"]:
+                debug_config.server["arguments"].extend(
+                    ["--frequency", debug_config.speed]
+                )
