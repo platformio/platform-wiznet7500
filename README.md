@@ -1,6 +1,6 @@
 # WIZNet W7500: development platform for [PlatformIO](https://platformio.org)
 
-This development platform is deprecated and won't receive any further updates.
+### This development platform is deprecated and won't receive any further updates.
 
 ![alt text](https://github.com/platformio/platform-wiznet7500/workflows/Examples/badge.svg "WIZNet W7500 development platform")
 
